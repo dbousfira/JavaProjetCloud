@@ -39,7 +39,6 @@ public class LoanApprovalService {
 			account = approved ? updateAccount(name, amount) : fetchAccount(name);
 			return new ResponseEntity<ApprovalResponseWrapper>(new ApprovalResponseWrapper(account, approved), HttpStatus.OK);
 		} catch (Exception e) {
-			e.printStackTrace();
 			return new ResponseEntity<ExceptionWrapper>(new ExceptionWrapper(e), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -78,8 +77,9 @@ public class LoanApprovalService {
 	 */
 	private boolean isRisky(String name) throws Exception {
 		String service = ServicesCaller.CHECK_ACCOUNT;
-		JSONObject data = (JSONObject) ServicesCaller.call(service, RequestMethod.POST, false, "name", name);
-		return data.getString("risk").equalsIgnoreCase("high");
+		LinkedHashMap<String, Object> data = (LinkedHashMap<String, Object>) 
+				ServicesCaller.call(service, RequestMethod.POST, false, "name", name);
+		return "high".equalsIgnoreCase((String) data.get("risk"));
 	}
 	
 	/**

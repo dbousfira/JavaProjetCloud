@@ -1,8 +1,8 @@
 package projetcloud.model;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +31,7 @@ public abstract class ServicesCaller {
 	 */
 	public static Object call(String url, RequestMethod method, boolean collection, Object... args) throws Exception {
 		ResponseEntity<?> res;
-		Class<?> type = collection ? List.class : JSONObject.class;
+		Class<?> type = collection ? List.class : LinkedHashMap.class;
         RestTemplate rest = new RestTemplate();
         switch (method) {
         	case GET:
