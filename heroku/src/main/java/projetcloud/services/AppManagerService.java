@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import projetcloud.database.AccessLayerException;
 import projetcloud.database.DataAccessLayer;
 import projetcloud.model.ExceptionWrapper;
 import projetcloud.model.Approval;
+import projetcloud.model.DeleteResponseWrapper;
 
 @RestController
 @RequestMapping("/appmanager")
@@ -66,7 +66,7 @@ public class AppManagerService {
 		try {
 			dal = DataAccessLayer.get();
 			boolean success = dal.delete(name);
-			return new ResponseEntity<Boolean>(success, HttpStatus.OK);
+			return new ResponseEntity<DeleteResponseWrapper>(new DeleteResponseWrapper(success), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<ExceptionWrapper>(new ExceptionWrapper(e), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
