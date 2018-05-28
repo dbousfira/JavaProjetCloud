@@ -21,74 +21,90 @@ import projetcloud.model.ServicesCaller;
 @RequestMapping("/loanapproval")
 public class LoanApproval {
 	
-	private final String LIST_APPROVALS = "https://stark-savannah-65713.herokuapp.com/appmanager/";
-	
-	// TODO GAE services URL
-	private final String LIST_ACCOUNTS = "";
-	private final String CHECK_ACCOUNT = "";
-	
-
+	/** 
+	 * approval service
+	 * @param name person name
+	 * @param amount amount to approve
+	 * @return a {@link JSONObject} containing approval response and user account
+	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/{name}/{amount}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> ask(@PathVariable String name, @PathVariable Long amount) {
+		JSONObject account;
 		boolean approved = false;
 		try {
-			if (amount < 10000 && !isRisky(name)) {
-				approved = true;
-			} else if (isApproved(name)) {
+			if (amount < 10000 && !isRisky(name) || isApproved(name)) {
 				approved = true;
 			}
-			if (approved) {
-				// TODO update account ammount
-			}
-			return new ResponseEntity<ApprovalResponseWrapper>(new ApprovalResponseWrapper(fetchAccount(name), approved), HttpStatus.OK);
+			account = approved ? updateAccount(name, amount) : fetchAccount(name);
+			return new ResponseEntity<ApprovalResponseWrapper>(new ApprovalResponseWrapper(account, approved), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<ExceptionWrapper>(new ExceptionWrapper(e), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
 	/**
-	 * call accmanager service
+	 * call accmanager service (add amount to an account)
+	 * @param name person name
+	 * @param amount amount to add
+	 * @return the account of the person
+	 * @throws Exception if an error occurred while trying to call service
+	 */
+	private JSONObject updateAccount(String name, long amount) throws Exception {
+		String service = ServicesCaller.UPDATE_ACCOUNT;
+		Optional<Object> data = ServicesCaller.call(service,
+				RequestMethod.POST, new ResponseEntity<JSONObject>(HttpStatus.OK), "name", name, "amount", amount);
+		if (!data.isPresent()) {
+			throw new Exception("An error occurred while updating account amount");
+		}
+		return fetchAccount(name);
+	}
+	
+	/**
+	 * call accmanager service (fetch one person account)
 	 * @param name of the person
 	 * @return the account of the person
 	 * @throws Exception if an error occurred while trying to call service
 	 */
 	private JSONObject fetchAccount(String name) throws Exception {
-		Optional<Object> data = ServicesCaller.call(LIST_ACCOUNTS,
+		String service = ServicesCaller.LIST_ACCOUNTS;
+		Optional<Object> data = ServicesCaller.call(service,
 				RequestMethod.GET, new ResponseEntity<List<JSONObject>>(HttpStatus.OK));
 		if (!data.isPresent()) {
-			throw new IllegalArgumentException("No data found while fetching accounts list");
+			throw new Exception("No data found while fetching accounts list");
 		}
 		List<JSONObject> collection = (List<JSONObject>) data.get();
 		return find(collection, name);
 	}
 	
 	/**
-	 * call accmanager service
+	 * call accmanager service (fetch risk value associated to an account)
 	 * @param name name of the person
 	 * @return true if the account is risky
 	 * @throws Exception if an error occurred while trying to call service
 	 */
 	private boolean isRisky(String name) throws Exception {
-		Optional<Object> data = ServicesCaller.call(CHECK_ACCOUNT, 
+		String service = ServicesCaller.CHECK_ACCOUNT;
+		Optional<Object> data = ServicesCaller.call(service, 
 				RequestMethod.POST, new ResponseEntity<JSONObject>(HttpStatus.OK), "name", name);
 		if (!data.isPresent()) {
-			throw new IllegalArgumentException("No data found about the risk of this account");
+			throw new Exception("No data found about the risk of this account");
 		}
 		JSONObject object = (JSONObject) data.get();
 		return object.getString("risk").equalsIgnoreCase("high");
 	}
 	
 	/**
-	 * call appmanager service
+	 * call appmanager service (fetch approval value associated to an account)
 	 * @param name name of the person
 	 * @return true if the approval is approved, false if not, or if it doesn't exists yet
 	 * @throws Exception if an error occurred while trying to call service
 	 */
 	private boolean isApproved(String name) throws Exception {
-		Optional<Object> data = ServicesCaller.call(LIST_APPROVALS,
+		String service = ServicesCaller.LIST_APPROVALS;
+		Optional<Object> data = ServicesCaller.call(service,
 				RequestMethod.GET, new ResponseEntity<List<JSONObject>>(HttpStatus.OK));
 		if (!data.isPresent()) {
-			throw new IllegalArgumentException("No data found while fetching approvals list");
+			throw new Exception("No data found while fetching approvals list");
 		}
 		List<JSONObject> collection = (List<JSONObject>) data.get();
 		return find(collection, name).getBoolean("approved");

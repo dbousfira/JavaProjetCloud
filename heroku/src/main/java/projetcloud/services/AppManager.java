@@ -23,7 +23,7 @@ public class AppManager {
 	private DataAccessLayer dal;
 
 	/**
-	 * call add service
+	 * add service
 	 * @param name approval name to add
 	 * @param approved is approved
 	 * @return created entity
@@ -42,7 +42,7 @@ public class AppManager {
 	}
 	
 	/**
-	 * call list service
+	 * list service
 	 * @return list of approvals
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/", produces = MediaType.APPLICATION_JSON_VALUE) 
@@ -57,7 +57,7 @@ public class AppManager {
 	}
 	
 	/**
-	 * call delete service
+	 * delete service
 	 * @param name approval name to delete
 	 * @return true if the database has been affected
 	 */

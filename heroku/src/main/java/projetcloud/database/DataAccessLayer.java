@@ -99,7 +99,6 @@ public class DataAccessLayer {
 			PreparedStatement ps = connection.prepareStatement(query);
 			ps.execute();
 		} catch (Exception e) {
-			e.printStackTrace();
 			throw new AccessLayerException(error, e);
 		}
 	}

@@ -1,9 +1,8 @@
 package projetcloud.model;
 
-import java.io.Serializable;
 import java.util.Objects;
 
-public class Approval implements Serializable {
+public class Approval {
 
 	private String name;
 	private boolean approved;

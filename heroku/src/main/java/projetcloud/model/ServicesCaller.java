@@ -11,6 +11,13 @@ import org.springframework.web.client.RestTemplate;
 
 public abstract class ServicesCaller {
 	
+	public static final String LIST_APPROVALS = "https://stark-savannah-65713.herokuapp.com/appmanager/";
+	
+	// TODO : GAE services URL
+	public static final String LIST_ACCOUNTS = "";
+	public static final String UPDATE_ACCOUNT = "";
+	public static final String CHECK_ACCOUNT = "";
+	
 	/**
 	 * call a web service
 	 * @param url url of the service
@@ -35,9 +42,7 @@ public abstract class ServicesCaller {
         	default:
         		throw new IllegalArgumentException("http method not implemented");
         }
-        return expected == null ?
-        		Optional.empty() :
-        		Optional.of(expected.getBody());
+        return expected == null ? Optional.empty() : Optional.of(expected.getBody());
 	}
 	
 	/**
