@@ -1,6 +1,6 @@
 ## DESCRIPTION DES SERVICES :
 
-* AppManager : https://stark-savannah-65713.herokuapp.com/appmanager
+* AppManager : https://stark-savannah-65713.herokuapp.com/appmanager/
 		
   * GET : **/**
 
@@ -8,6 +8,6 @@
 
   * DELETE : **/delete/{name}**, {name} = string
 
-* LoanApproval : https://stark-savannah-65713.herokuapp.com/loanapproval
+* LoanApproval : https://stark-savannah-65713.herokuapp.com/loanapproval/
 
   * GET : **/{name}/{amount}**, {name} = string, {amount} = long
