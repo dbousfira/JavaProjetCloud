@@ -1,8 +1,10 @@
 package projetcloud.model;
 
-import java.util.Optional;
+import java.util.List;
 
+import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -22,27 +24,29 @@ public abstract class ServicesCaller {
 	 * call a web service
 	 * @param url url of the service
 	 * @param method http method
-	 * @param expected response type expected
+	 * @param collection is the result a collection ?
 	 * @param args optionnals args
-	 * @return a json object if returned
+	 * @return json object returned
 	 * @throws Exception if an error occured while calling the service
 	 */
-	public static Optional<Object> call(String url, RequestMethod method, ResponseEntity<?> expected, Object... args) throws Exception {
+	public static Object call(String url, RequestMethod method, boolean collection, Object... args) throws Exception {
+		ResponseEntity<?> res;
+		Class<?> type = collection ? List.class : JSONObject.class;
         RestTemplate rest = new RestTemplate();
         switch (method) {
         	case GET:
-        		expected = rest.getForEntity(url, expected.getClass());
+        		res = rest.exchange(url, HttpMethod.GET, build(args), type);
         		break;
         	case POST:
-	    		expected = rest.postForEntity(url, build(args), expected.getClass());
+	    		res = rest.exchange(url, HttpMethod.POST, build(args), type);
 	    		break;
         	case DELETE:
-        		rest.delete(url);
+        		res = rest.exchange(url, HttpMethod.DELETE, build(args), type);
         		break;
         	default:
         		throw new IllegalArgumentException("http method not implemented");
         }
-        return expected == null ? Optional.empty() : Optional.of(expected.getBody());
+        return res.getBody();
 	}
 	
 	/**

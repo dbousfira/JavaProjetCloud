@@ -19,7 +19,7 @@ public class DataAccessLayer {
 	/**
 	 * Get instance of {@link DataAccessLayer}
 	 * @return unique layer instance
-	 * @throws AccessLayerException if an error occured while initializing object
+	 * @throws AccessLayerException if an error occurred while initializing object
 	 */
 	public static DataAccessLayer get() throws AccessLayerException {
 		if (instance == null) {

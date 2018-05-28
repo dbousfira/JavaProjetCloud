@@ -1,5 +1,6 @@
 package projetcloud.services;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +39,7 @@ public class LoanApprovalService {
 			account = approved ? updateAccount(name, amount) : fetchAccount(name);
 			return new ResponseEntity<ApprovalResponseWrapper>(new ApprovalResponseWrapper(account, approved), HttpStatus.OK);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return new ResponseEntity<ExceptionWrapper>(new ExceptionWrapper(e), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -51,11 +53,7 @@ public class LoanApprovalService {
 	 */
 	private JSONObject updateAccount(String name, long amount) throws Exception {
 		String service = ServicesCaller.UPDATE_ACCOUNT;
-		Optional<Object> data = ServicesCaller.call(service,
-				RequestMethod.POST, new ResponseEntity<JSONObject>(HttpStatus.OK), "name", name, "amount", amount);
-		if (!data.isPresent()) {
-			throw new Exception("An error occurred while updating account amount");
-		}
+		ServicesCaller.call(service, RequestMethod.POST, false, "name", name, "amount", amount);
 		return fetchAccount(name);
 	}
 	
@@ -67,13 +65,9 @@ public class LoanApprovalService {
 	 */
 	private JSONObject fetchAccount(String name) throws Exception {
 		String service = ServicesCaller.LIST_ACCOUNTS;
-		Optional<Object> data = ServicesCaller.call(service,
-				RequestMethod.GET, new ResponseEntity<List<JSONObject>>(HttpStatus.OK));
-		if (!data.isPresent()) {
-			throw new Exception("No data found while fetching accounts list");
-		}
-		List<JSONObject> collection = (List<JSONObject>) data.get();
-		return find(collection, name);
+		List<LinkedHashMap<String, Object>> data = (List<LinkedHashMap<String, Object>>) 
+				ServicesCaller.call(service, RequestMethod.GET, true);
+		return find(data, name);
 	}
 	
 	/**
@@ -84,13 +78,8 @@ public class LoanApprovalService {
 	 */
 	private boolean isRisky(String name) throws Exception {
 		String service = ServicesCaller.CHECK_ACCOUNT;
-		Optional<Object> data = ServicesCaller.call(service, 
-				RequestMethod.POST, new ResponseEntity<JSONObject>(HttpStatus.OK), "name", name);
-		if (!data.isPresent()) {
-			throw new Exception("No data found about the risk of this account");
-		}
-		JSONObject object = (JSONObject) data.get();
-		return object.getString("risk").equalsIgnoreCase("high");
+		JSONObject data = (JSONObject) ServicesCaller.call(service, RequestMethod.POST, false, "name", name);
+		return data.getString("risk").equalsIgnoreCase("high");
 	}
 	
 	/**
@@ -101,33 +90,35 @@ public class LoanApprovalService {
 	 */
 	private boolean isApproved(String name) throws Exception {
 		String service = ServicesCaller.LIST_APPROVALS;
-		Optional<Object> data = ServicesCaller.call(service,
-				RequestMethod.GET, new ResponseEntity<List<JSONObject>>(HttpStatus.OK));
-		if (!data.isPresent()) {
-			throw new Exception("No data found while fetching approvals list");
-		}
-		List<JSONObject> collection = (List<JSONObject>) data.get();
-		return find(collection, name).getBoolean("approved");
+		List<LinkedHashMap<String, Object>> data = (List<LinkedHashMap<String, Object>>) 
+				ServicesCaller.call(service, RequestMethod.GET, true);
+		return find(data, name).getBoolean("approved");
 	}
 	
 	/**
-	 * find an account wrapped into a {@link JSONObject}
+	 * find an account wrapped into a {@link LinkedHashMap}
 	 * @param objects list of json objects
 	 * @param name account to find
 	 * @return wrapper json found
 	 */
-	private JSONObject find(List<JSONObject> objects, String name) {
-		Optional<JSONObject> account = objects.stream()
-				.filter(obj -> {
+	private JSONObject find(List<LinkedHashMap<String, Object>> objects, String name) {
+		Optional<LinkedHashMap<String, Object>> account = objects.stream()
+				.filter(elt -> {
 					try {
-						return obj.getString("name").equalsIgnoreCase(name);
-					} catch (JSONException e) {
+						return name.equalsIgnoreCase((String) elt.get("name"));
+					} catch (ClassCastException e) {
 						return false;
 					}
 				}).findAny();
 		if (!account.isPresent()) {
 			throw new IllegalArgumentException("No data found while fetching account");
 		}
-		return account.get();
+		JSONObject mapped = new JSONObject();
+		account.get().forEach((k, v) -> {
+			try {
+				mapped.put(k, v);
+			} catch (JSONException e) {}
+		});
+		return mapped;
 	}
 }
