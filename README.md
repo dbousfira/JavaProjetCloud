@@ -12,7 +12,7 @@
 
   * DELETE : **/delete/{name}**, {name} = string
   
-    - **boolean**
+    - **json**
     
 
 * LoanApproval : https://stark-savannah-65713.herokuapp.com/loanapproval/
