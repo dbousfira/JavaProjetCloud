@@ -63,7 +63,7 @@ public class AppManagerService {
 	 */
 	@RequestMapping(method = RequestMethod.DELETE, value = "/delete/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> delete(@PathVariable String name) {
-		try {
+		try { 
 			dal = DataAccessLayer.get();
 			boolean success = dal.delete(name);
 			return new ResponseEntity<DeleteResponseWrapper>(new DeleteResponseWrapper(success), HttpStatus.OK);

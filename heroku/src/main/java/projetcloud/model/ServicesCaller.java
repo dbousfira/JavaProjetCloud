@@ -52,15 +52,15 @@ public abstract class ServicesCaller {
 	 */
 	private static HttpEntity<?> build(Object[] args) {
 		MultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
-            for (int i = 0; i < args.length; i++) {
-	        	if (i % 2 == 0) {
-	        		try {
-	        			parameters.add((String) args[i - 1], (String) args[i]);
-	        		} catch (ClassCastException e) {
-	        			parameters.add((String) args[i - 1], args[i].toString());
-	        		}
-	        	}
-	        }
+        for (int i = 0; i < args.length; i++) {
+        	if (i % 2 == 0 && i != 0) {
+        		try {
+        			parameters.add((String) args[i - 1], (String) args[i]);
+        		} catch (ClassCastException e) {
+        			parameters.add((String) args[i - 1], args[i].toString());
+        		}
+        	}
+        }
         return new HttpEntity<>(parameters);
 	}
 }
