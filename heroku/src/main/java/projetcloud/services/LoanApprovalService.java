@@ -102,14 +102,13 @@ public class LoanApprovalService {
 	 * @return wrapper json found
 	 */
 	private JSONObject find(List<LinkedHashMap<String, Object>> objects, String name) {
-		Optional<LinkedHashMap<String, Object>> account = objects.stream()
-				.filter(elt -> {
-					try {
-						return name.equalsIgnoreCase((String) elt.get("name"));
-					} catch (ClassCastException e) {
-						return false;
-					}
-				}).findAny();
+		Optional<LinkedHashMap<String, Object>> account = objects.stream().filter(elt -> {
+				try {
+					return name.equalsIgnoreCase((String) elt.get("name"));
+				} catch (ClassCastException e) {
+					return false;
+				}
+			}).findAny();
 		if (!account.isPresent()) {
 			throw new IllegalArgumentException("No data found while fetching account");
 		}
