@@ -19,7 +19,7 @@ import projetcloud.model.ServicesCaller;
 
 @RestController
 @RequestMapping("/loanapproval")
-public class LoanApproval {
+public class LoanApprovalService {
 	
 	/** 
 	 * approval service

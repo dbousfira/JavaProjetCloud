@@ -18,7 +18,7 @@ import projetcloud.model.Approval;
 
 @RestController
 @RequestMapping("/appmanager")
-public class AppManager {
+public class AppManagerService {
 	
 	private DataAccessLayer dal;
 
