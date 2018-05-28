@@ -4,22 +4,22 @@
 		
   * GET : **/**
   
-    - **json[]**
+    - **json[]** (name: string, approved: boolean)
 
   * POST : **/add**, "name" = string, "approved" = boolean
   
-    - **json**
+    - **json** (name: string, approved: boolean)
 
   * DELETE : **/delete/{name}**, {name} = string
   
-    - **json**
+    - **json** (success: boolean)
     
 
 * LoanApproval : https://stark-savannah-65713.herokuapp.com/loanapproval/
 
   * GET : **/{name}/{amount}**, {name} = string, {amount} = long
   
-    - **json**
+    - **json** (account: json, approved: boolean)
 
 ## REPARTITION DU TRAVAIL
 
