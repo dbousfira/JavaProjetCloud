@@ -13,9 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import projetcloud.database.AccessLayerException;
 import projetcloud.database.DataAccessLayer;
-import projetcloud.model.AccessLayerExceptionWrapper;
+import projetcloud.model.ExceptionWrapper;
 import projetcloud.model.Approval;
-import projetcloud.model.QueryStateWrapper;
 
 @RestController
 @RequestMapping("/appmanager")
@@ -38,7 +37,7 @@ public class AppManager {
 			Approval inserted = dal.insert(name, approved);
 			return new ResponseEntity<Approval>(inserted, HttpStatus.OK);
 		} catch (AccessLayerException e) {
-			return new ResponseEntity<AccessLayerExceptionWrapper>(new AccessLayerExceptionWrapper(e), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<ExceptionWrapper>(new ExceptionWrapper(e), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
@@ -53,23 +52,23 @@ public class AppManager {
 			List<Approval> approvals = dal.list();
 			return new ResponseEntity<List<Approval>>(approvals, HttpStatus.OK);
 		} catch (AccessLayerException e) {
-			return new ResponseEntity<AccessLayerExceptionWrapper>(new AccessLayerExceptionWrapper(e), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<ExceptionWrapper>(new ExceptionWrapper(e), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
 	/**
 	 * call delete service
 	 * @param name approval name to delete
-	 * @return a success boolean
+	 * @return true if the database has been affected
 	 */
-	@RequestMapping(method = RequestMethod.DELETE, value = "/delete/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(method = RequestMethod.DELETE, value = "/delete/{name}", produces = MediaType.TEXT_PLAIN_VALUE)
 	public ResponseEntity<?> delete(@PathVariable String name) {
 		try {
 			dal = DataAccessLayer.get();
 			boolean success = dal.delete(name);
-			return new ResponseEntity<QueryStateWrapper>(new QueryStateWrapper(success), HttpStatus.OK);
+			return new ResponseEntity<Boolean>(success, HttpStatus.OK);
 		} catch (AccessLayerException e) {
-			return new ResponseEntity<AccessLayerExceptionWrapper>(new AccessLayerExceptionWrapper(e), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<ExceptionWrapper>(new ExceptionWrapper(e), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 }
