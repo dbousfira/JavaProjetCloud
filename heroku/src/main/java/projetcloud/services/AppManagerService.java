@@ -36,7 +36,7 @@ public class AppManagerService {
 			dal = DataAccessLayer.get();
 			Approval inserted = dal.insert(name, approved);
 			return new ResponseEntity<Approval>(inserted, HttpStatus.OK);
-		} catch (AccessLayerException e) {
+		} catch (Exception e) {
 			return new ResponseEntity<ExceptionWrapper>(new ExceptionWrapper(e), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -51,7 +51,7 @@ public class AppManagerService {
 			dal = DataAccessLayer.get();
 			List<Approval> approvals = dal.list();
 			return new ResponseEntity<List<Approval>>(approvals, HttpStatus.OK);
-		} catch (AccessLayerException e) {
+		} catch (Exception e) {
 			return new ResponseEntity<ExceptionWrapper>(new ExceptionWrapper(e), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -67,7 +67,7 @@ public class AppManagerService {
 			dal = DataAccessLayer.get();
 			boolean success = dal.delete(name);
 			return new ResponseEntity<Boolean>(success, HttpStatus.OK);
-		} catch (AccessLayerException e) {
+		} catch (Exception e) {
 			return new ResponseEntity<ExceptionWrapper>(new ExceptionWrapper(e), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
