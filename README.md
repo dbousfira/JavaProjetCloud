@@ -25,4 +25,4 @@
 
 * Hugo : AppManager, LoanApproval
 
-* Djamel : AccManager, Check_account
+* Djamel : AccManager, CheckAccount
