@@ -21,7 +21,7 @@
   
     - **json** (account: json, approved: boolean)
 
-## REPARTITION DU TRAVAIL
+## REPARTITION DU TRAVAIL :
 
 * Hugo : AppManager, LoanApproval
 
