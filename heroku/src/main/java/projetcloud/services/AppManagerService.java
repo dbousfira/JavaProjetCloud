@@ -61,7 +61,7 @@ public class AppManagerService {
 	 * @param name approval name to delete
 	 * @return true if the database has been affected
 	 */
-	@RequestMapping(method = RequestMethod.DELETE, value = "/delete/{name}", produces = MediaType.TEXT_PLAIN_VALUE)
+	@RequestMapping(method = RequestMethod.DELETE, value = "/delete/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> delete(@PathVariable String name) {
 		try {
 			dal = DataAccessLayer.get();
