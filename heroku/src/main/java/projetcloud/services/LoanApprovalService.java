@@ -30,13 +30,12 @@ public class LoanApprovalService {
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/{name}/{amount}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> ask(@PathVariable String name, @PathVariable Long amount) {
-		JSONObject account;
 		boolean approved = false;
 		try {
 			if (amount < 10000 && !isRisky(name) || isApproved(name)) {
 				approved = true;
 			}
-			account = approved ? updateAccount(name, amount) : fetchAccount(name);
+			JSONObject account = approved ? updateAccount(name, amount) : fetchAccount(name);
 			return new ResponseEntity<ApprovalResponseWrapper>(new ApprovalResponseWrapper(account, approved), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<ExceptionWrapper>(new ExceptionWrapper(e), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -52,7 +51,7 @@ public class LoanApprovalService {
 	 */
 	private JSONObject updateAccount(String name, long amount) throws Exception {
 		String service = ServicesCaller.UPDATE_ACCOUNT;
-		ServicesCaller.call(service, RequestMethod.POST, false, "name", name, "amount", amount);
+		ServicesCaller.call(service, RequestMethod.POST, false, "id", name, "amount", amount);
 		return fetchAccount(name);
 	}
 	
@@ -78,7 +77,7 @@ public class LoanApprovalService {
 	private boolean isRisky(String name) throws Exception {
 		String service = ServicesCaller.CHECK_ACCOUNT;
 		LinkedHashMap<String, Object> data = (LinkedHashMap<String, Object>) 
-				ServicesCaller.call(service, RequestMethod.POST, false, "name", name);
+				ServicesCaller.call(service, RequestMethod.POST, false, "id", name);
 		return "high".equalsIgnoreCase((String) data.get("risk"));
 	}
 	

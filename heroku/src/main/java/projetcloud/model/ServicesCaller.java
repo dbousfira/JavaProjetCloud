@@ -14,11 +14,9 @@ import org.springframework.web.client.RestTemplate;
 public abstract class ServicesCaller {
 	
 	public static final String LIST_APPROVALS = "https://stark-savannah-65713.herokuapp.com/appmanager/";
-	
-	// TODO : GAE services URL
-	public static final String LIST_ACCOUNTS = "";
-	public static final String UPDATE_ACCOUNT = "";
-	public static final String CHECK_ACCOUNT = "";
+	public static final String LIST_ACCOUNTS = "https://inf63app12.appspot.com/accounts";
+	public static final String UPDATE_ACCOUNT = "https://inf63app12.appspot.com/accounts";
+	public static final String CHECK_ACCOUNT = "https://inf63app12.appspot.com/check";
 	
 	/**
 	 * call a web service
@@ -27,7 +25,7 @@ public abstract class ServicesCaller {
 	 * @param collection is the result a collection ?
 	 * @param args optionnals args
 	 * @return json object returned
-	 * @throws Exception if an error occured while calling the service
+	 * @throws Exception if an error occurred while calling the service
 	 */
 	public static Object call(String url, RequestMethod method, boolean collection, Object... args) throws Exception {
 		ResponseEntity<?> res;
@@ -50,7 +48,7 @@ public abstract class ServicesCaller {
 	}
 	
 	/**
-	 * put POST args into request
+	 * put args into request
 	 * @param args arguments
 	 * @return http entity
 	 */
