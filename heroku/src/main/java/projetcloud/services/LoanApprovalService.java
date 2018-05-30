@@ -77,7 +77,7 @@ public class LoanApprovalService {
 	private boolean isRisky(String name) throws Exception {
 		String service = ServicesCaller.CHECK_ACCOUNT;
 		LinkedHashMap<String, Object> data = (LinkedHashMap<String, Object>) 
-				ServicesCaller.call(service, RequestMethod.POST, false, "id", name);
+				ServicesCaller.call(service, RequestMethod.GET, false, "id", name);
 		return "high".equalsIgnoreCase((String) data.get("risk"));
 	}
 	
